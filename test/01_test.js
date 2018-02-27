@@ -1,4 +1,10 @@
 const Demo = artifacts.require('./Demo.sol');
+chai = require('chai');
+chaiAsPromised = require('chai-as-promised');
+
+chai.use(chaiAsPromised);
+
+expect = chai.expect;
 
 contract("Test the Demo contract", function (accounts) {
     describe("Deploy the demo smart contract", function () {
@@ -20,14 +26,12 @@ contract("Test the Demo contract", function (accounts) {
                 expect(res.toString()).to.be.equal('Alice');
             })
         });
-        it("call the function change name - Bob ", function () {
-            return demoContract.changeName('Bob').then(function (res) {
-                expect(res).to.not.be.an('error');
-            });
-        });
-        it('Check the variable name - should be Bob', function () {
+        it("call the function change name - Bob - shood fail", function () {
+            return expect(demoContract.changeName('Bob', { 'from': accounts[1] })).to.be.eventually.rejected;
+        }); 
+        it('Check the variable name - should be Alice', function () {
             return demoContract.name().then(function (res) {
-                expect(res.toString()).to.be.equal('Bob');
+                expect(res.toString()).to.be.equal('Alice');
             })
         })
     });
